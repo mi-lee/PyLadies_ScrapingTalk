@@ -15,10 +15,8 @@ def parse(item, urlformatnewsitem):
     return (title, date, url)
 
 
-urlformat = 'http://wx.toronto.ca/inter/it/newsrel.nsf/ag_createNewsRelease\
-JSON?openAgent&start=%s&count=%s&_=1463533372174'
-urlformatnewsitem = 'http://www1.toronto.ca/wps/portal/contentonly?vgnextoid\
-=af71df79b2df6410VgnVCM10000071d60f89RCRD&nrkey=%s'
+urlformat = 'http://wx.toronto.ca/inter/it/newsrel.nsf/ag_createNewsReleaseJSON?openAgent&start=%s&count=%s&_=1463533372174'
+urlformatnewsitem = 'http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=af71df79b2df6410VgnVCM10000071d60f89RCRD&nrkey=%s'
 
 downloadedpages = []
 start = 1
@@ -37,7 +35,9 @@ while start <= 5 * 10:
 results = []
 for page in downloadedpages:
     print 'parsing results...'
+    # Strip off "jsonCallback" and last 4 chars
     jsontext = page.replace('jsonCallBack(', '')[:-4]
+    jsontext = jsontext.replace('\t', '\\t')
     newsitems = json.loads(jsontext)
     parsedresults = \
         [parse(item, urlformatnewsitem) for item in newsitems['Newsroom']]
